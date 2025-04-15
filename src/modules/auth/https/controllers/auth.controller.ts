@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LoginRequest } from 'src/modules/auth/https/requests/login.request';
-import { LoginAction } from 'src/modules/auth/actions/login.action';
+import { LoginAction } from 'src/modules/auth/domain/actions/login.action';
 import { User } from 'src/modules/auth/decorator/user.decorator';
 import { ConfigService } from '@nestjs/config';
 
@@ -45,6 +45,7 @@ export class AuthController {
         data: {
           app_name: this.configService.get<string>('app.name', 'Không tìm thấy'),
           port: this.configService.get<string>('app.port', 'Không tìm thấy'),
+          db_name: this.configService.get<string>('DB_PORT', 'Không tìm thấy'),
         },
         message: 'hello',
       },

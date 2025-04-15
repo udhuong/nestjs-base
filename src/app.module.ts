@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CommonModule } from './modules/common/common.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'src/config/configuration';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseConfig } from './config/database.config';
 
 @Module({
   imports: [
@@ -16,6 +18,12 @@ import configuration from 'src/config/configuration';
       isGlobal: true,
       expandVariables: true,
       load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync({
+      // name: 'masterConnection',
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,
     }),
   ],
   controllers: [AppController],

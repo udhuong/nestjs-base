@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AuthService } from 'src/modules/auth/services/auth.service';
 import { AuthController } from 'src/modules/auth/https/controllers/auth.controller';
 import { LoggerMiddleware } from 'src/modules/auth/middleware/logger.middleware';
-import { LoginAction } from 'src/modules/auth/actions/login.action';
+import { LoginAction } from 'src/modules/auth/domain/actions/login.action';
 
 @Module({
   controllers: [AuthController],
