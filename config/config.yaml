@@ -1,0 +1,10 @@
+app:
+  name: ${APP_NAME}
+  port: ${PORT}
+
+database:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  username: ${DB_USER}
+  password: ${DB_PASS}
+  name: ${DB_NAME}
