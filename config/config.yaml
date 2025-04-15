@@ -3,8 +3,22 @@ app:
   port: ${PORT}
 
 database:
-  host: ${DB_HOST}
-  port: ${DB_PORT}
-  username: ${DB_USER}
-  password: ${DB_PASS}
-  name: ${DB_NAME}
+  default:
+    type: 'mysql'
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    database: ${DB_NAME}
+    entities:
+      - 'dist/**/*.entity{.ts,.js}'
+    synchronize: true
+    logging: ${TYPEORM_LOG}
+
+jwt:
+  access:
+    secret: ${ACCESS_TOKEN_SECRET}
+    expiry: ${ACCESS_TOKEN_EXPIRY}
+  refresh:
+    secret: ${REFRESH_TOKEN_SECRET}
+    expiry: ${REFRESH_TOKEN_EXPIRY}

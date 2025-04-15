@@ -1,19 +1,47 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { AuthService } from 'src/modules/auth/services/auth.service';
-import { AuthController } from 'src/modules/auth/https/controllers/auth.controller';
-import { LoggerMiddleware } from 'src/modules/auth/middleware/logger.middleware';
-import { LoginAction } from 'src/modules/auth/actions/login.action';
+import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserRepositoryImpl } from './infrastructure/repositories/user.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './infrastructure/entities/user.entity';
+import { AuthController } from './presentation/https/controllers/auth.controller';
+import { LoginAction } from './domain/actions/login.action';
+import { RegisterAction } from './domain/actions/register.action';
+import { TokenRepositoryImpl } from './infrastructure/repositories/token.repository';
+import { AccessTokenEntity } from './infrastructure/entities/access-token.entity';
+import { RefreshTokenEntity } from './infrastructure/entities/refresh-token.entity';
+import { TokenService } from './application/services/token.service';
+import { REPOSITORY } from './type';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, LoginAction],
-  exports: [AuthService], // Module user muốn sử dụng AuthService
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, AccessTokenEntity, RefreshTokenEntity]),
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  providers: [
+    JwtStrategy,
+    TokenService,
+    LoginAction,
+    RegisterAction,
+    {
+      provide: REPOSITORY.UserRepository,
+      useClass: UserRepositoryImpl,
+    },
+    {
+      provide: REPOSITORY.TokenRepository,
+      useClass: TokenRepositoryImpl,
+    },
+  ],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes({
-      path: 'auth',
-      method: RequestMethod.GET,
-    });
-  }
-}
+export class AuthModule {}
