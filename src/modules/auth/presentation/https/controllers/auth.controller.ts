@@ -9,17 +9,34 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { LoginRequest } from 'src/modules/auth/https/requests/login.request';
+import { LoginRequest } from 'src/modules/auth/presentation/https/requests/login.request';
 import { LoginAction } from 'src/modules/auth/domain/actions/login.action';
-import { User } from 'src/modules/auth/decorator/user.decorator';
 import { ConfigService } from '@nestjs/config';
+import { RegisterRequest } from '../requests/register.request';
+import { RegisterAction } from '../../../domain/actions/register.action';
+import { Responder } from '../../../../../shared/responder';
+import { RegisterResponse } from '../responses/register.response';
+import { LoginResponse } from '../responses/login.response';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(
-    private configService: ConfigService,
-    private loginAction: LoginAction,
+    private readonly configService: ConfigService,
+    private readonly loginAction: LoginAction,
+    private readonly registerAction: RegisterAction,
   ) {}
+
+  /**
+   * Tạo mới tài khoản
+   *
+   * @param request
+   */
+  @Post('register')
+  async register(@Body() request: RegisterRequest): Promise<any> {
+    const authUser = await request.toDto();
+    await this.registerAction.handle(authUser);
+    return Responder.success(RegisterResponse.format(authUser));
+  }
 
   /**
    * Người dùng đăng nhập
@@ -28,6 +45,12 @@ export class AuthController {
    */
   @Post('login')
   async login(@Body() request: LoginRequest): Promise<any> {
+    const token = await this.loginAction.handle(request.email, request.password);
+    return Responder.success(LoginResponse.format(token), 'Đăng nhập thành công.');
+  }
+
+  @Post('refresh')
+  async refreshToken(@Body() request: LoginRequest): Promise<any> {
     await this.loginAction.handle(request.email, request.password);
   }
 
@@ -51,10 +74,5 @@ export class AuthController {
       },
       HttpStatus.OK,
     );
-  }
-
-  @Get('logout')
-  async logout(@User() user: any): Promise<any> {
-    console.log(user);
   }
 }

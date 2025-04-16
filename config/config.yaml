@@ -12,5 +12,13 @@ database:
     database: ${DB_NAME}
     entities:
       - 'dist/**/*.entity{.ts,.js}'
-    synchronize: ${TYPEORM_SYNC}
+    synchronize: true
     logging: ${TYPEORM_LOG}
+
+jwt:
+  access:
+    secret: ${ACCESS_TOKEN_SECRET}
+    expiry: ${ACCESS_TOKEN_EXPIRY}
+  refresh:
+    secret: ${REFRESH_TOKEN_SECRET}
+    expiry: ${REFRESH_TOKEN_EXPIRY}
