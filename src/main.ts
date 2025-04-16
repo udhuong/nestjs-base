@@ -1,10 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as bodyParser from 'body-parser';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './shared/interceptor/response.interceptor';
+import { JwtAuthGuard } from './modules/auth/infrastructure/guards/jwt.guard';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -20,6 +21,7 @@ async function bootstrap() {
     }),
   ); // bật cho toàn bộ app
   app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector)));
   app.enableCors();
   await app.listen(3000);
 }

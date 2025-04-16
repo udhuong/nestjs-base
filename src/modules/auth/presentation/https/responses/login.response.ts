@@ -1,16 +1,12 @@
-import { isEmpty } from 'lodash';
-import { Token } from '../../../domain/entities/token';
+import { AccessToken } from '../../../domain/entities/access-token';
 
 export class LoginResponse {
-  static format(token: Token): any {
-    if (isEmpty(token)) {
-      return null;
-    }
-
+  static format(accessToken: AccessToken, refreshToken: AccessToken): any {
     return {
-      expires_in: token.accessExpiresIn,
-      access_token: token.accessToken,
-      refresh_token: token.refreshToken,
+      token_type: 'Bearer',
+      expires_in: accessToken.expiryIn,
+      access_token: accessToken.id,
+      refresh_token: refreshToken.id,
     };
   }
 }

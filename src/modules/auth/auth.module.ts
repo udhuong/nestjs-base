@@ -6,14 +6,16 @@ import { UserRepositoryImpl } from './infrastructure/repositories/user.repositor
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './infrastructure/entities/user.entity';
 import { AuthController } from './presentation/https/controllers/auth.controller';
-import { LoginAction } from './domain/actions/login.action';
-import { RegisterAction } from './domain/actions/register.action';
+import { LoginUseCase } from './application/use-case/login.usecase';
+import { RegisterUseCase } from './application/use-case/register.usecase';
 import { TokenRepositoryImpl } from './infrastructure/repositories/token.repository';
 import { AccessTokenEntity } from './infrastructure/entities/access-token.entity';
 import { RefreshTokenEntity } from './infrastructure/entities/refresh-token.entity';
 import { TokenService } from './application/services/token.service';
 import { REPOSITORY } from './type';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
+import { PermissionService } from './application/services/permission.service';
+import { RefreshTokenUseCase } from './application/use-case/refresh-token.usecase';
 
 @Module({
   controllers: [AuthController],
@@ -32,8 +34,10 @@ import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
   providers: [
     JwtStrategy,
     TokenService,
-    LoginAction,
-    RegisterAction,
+    LoginUseCase,
+    RegisterUseCase,
+    RefreshTokenUseCase,
+    PermissionService,
     {
       provide: REPOSITORY.UserRepository,
       useClass: UserRepositoryImpl,

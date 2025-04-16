@@ -1,0 +1,15 @@
+whitelist:
+  uri:
+    - GET /health
+    - GET /docs
+    - POST /auth/login
+    - POST /auth/register
+  usernames:
+    - huongud1
+
+routes:
+  "GET /users":
+    roles: ['admin', 'manager']
+    permissions: ['user.read']
+    usernames: ['admin']
+    scopes: ['read:users']

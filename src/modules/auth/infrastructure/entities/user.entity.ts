@@ -9,8 +9,23 @@ export class UserEntity {
   name: string;
 
   @Column()
+  username: string;
+
+  @Column()
   email: string;
 
   @Column()
+  phone: string;
+
+  @Column()
   password: string;
+
+  @Column()
+  status: number;
+
+  @Column('datetime')
+  created: Date;
+
+  @Column('datetime')
+  modified: Date;
 }
