@@ -1,13 +1,14 @@
-import { JwtService } from '@nestjs/jwt';
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthUser } from '../../domain/entities/auth-user';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { isEmpty } from 'lodash';
+
 import { AppException } from '../../../../shared/exceptions/app-exception';
-import { REPOSITORY } from '../../type';
 import { TokenRepository } from '../../domain/contracts/token.repository.interface';
 import { AccessToken } from '../../domain/entities/access-token';
+import { AuthUser } from '../../domain/entities/auth-user';
 import { RefreshToken } from '../../domain/entities/refresh-token';
-import { isEmpty } from 'lodash';
+import { REPOSITORY } from '../../type';
 
 @Injectable()
 export class TokenService {
@@ -87,5 +88,18 @@ export class TokenService {
     } catch (e) {
       throw new AppException('Token is invalid or expired');
     }
+  }
+
+  /**
+   * Kiểm tra xem access token có bị thu hồi hay không
+   *
+   * @param token
+   */
+  async isRevokedAccessToken(token: string): Promise<boolean> {
+    const accessToken = await this.tokenRepository.findAccessToken(token);
+    if (!accessToken) {
+      throw new AppException('Token không tồn tại');
+    }
+    return accessToken.revoked == true;
   }
 }

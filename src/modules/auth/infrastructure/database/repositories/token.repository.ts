@@ -1,12 +1,13 @@
-import { TokenRepository } from '../../../domain/contracts/token.repository.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AccessTokenEntity } from '../entities/access-token.entity';
-import { Repository } from 'typeorm';
-import { RefreshTokenEntity } from '../entities/refresh-token.entity';
-import { AccessToken } from '../../../domain/entities/access-token';
 import { isEmpty } from 'lodash';
+import { Repository } from 'typeorm';
+
+import { TokenRepository } from '../../../domain/contracts/token.repository.interface';
+import { AccessToken } from '../../../domain/entities/access-token';
 import { RefreshToken } from '../../../domain/entities/refresh-token';
+import { AccessTokenEntity } from '../entities/access-token.entity';
+import { RefreshTokenEntity } from '../entities/refresh-token.entity';
 
 @Injectable()
 export class TokenRepositoryImpl implements TokenRepository {
@@ -47,6 +48,28 @@ export class TokenRepositoryImpl implements TokenRepository {
   }
 
   /**
+   * Tìm access token
+   *
+   * @param refreshToken
+   */
+  async findAccessToken(refreshToken: string): Promise<AccessToken> {
+    const entity = await this.accessTokenRepository.findOne({
+      where: {
+        id: refreshToken,
+      },
+    });
+    if (isEmpty(entity)) {
+      return null;
+    }
+
+    const token = new AccessToken();
+    token.id = entity.id;
+    token.expiryDate = entity.expiresAt;
+    token.revoked = entity.revoked;
+    return token;
+  }
+
+  /**
    * Tìm refresh token
    *
    * @param refreshToken
@@ -66,7 +89,6 @@ export class TokenRepositoryImpl implements TokenRepository {
     token.accessTokenId = entity.accessTokenId;
     token.expiryDate = entity.expiresAt;
     token.revoked = entity.revoked;
-
     return token;
   }
 
