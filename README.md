@@ -71,3 +71,9 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+Chạy file tạo bảng:
+```bash
+$ ts-node src/scripts/run-ddl.ts
+```

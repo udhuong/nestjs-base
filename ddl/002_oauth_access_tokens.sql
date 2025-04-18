@@ -1,6 +1,6 @@
 create table oauth_access_tokens
 (
-    `id`         varchar(100) primary key,
+    `id`         varchar(255) primary key,
     `user_id`    int unsigned default 0                 not null comment 'họ tên người dùng',
     `revoked`    boolean      default 0                 not null comment 'token đã bị vô hiệu hóa chưa',
     `expires_at` datetime     default current_timestamp not null comment 'thời gian sống của token',

@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import configuration from 'src/config/configuration';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
-import { CommonModule } from './modules/common/common.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from 'src/config/configuration';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfig } from './config/database.config';
-import { CacheModule } from '@nestjs/cache-manager';
-import { CacheConfigService } from './config/cache.config';
-import { ScheduleModule } from '@nestjs/schedule';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './modules/auth/auth.module';
+import { CommonModule } from './modules/common/common.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -39,9 +38,9 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,
     }),
-    CacheModule.registerAsync({
-      useClass: CacheConfigService,
-    }),
+    // CacheModule.registerAsync({
+    //   useClass: CacheConfigService,
+    // }),
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
