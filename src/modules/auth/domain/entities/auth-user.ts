@@ -3,6 +3,7 @@ export class AuthUser {
   name: string;
   email: string;
   password: string;
+  passwordRaw: string;
   roles: string[];
   permissions: string[];
 }

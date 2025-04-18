@@ -1,21 +1,23 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { LoginRequest } from 'src/modules/auth/presentation/https/requests/login.request';
-import { LoginAction } from 'src/modules/auth/domain/actions/login.action';
-import { ConfigService } from '@nestjs/config';
+import { LoginUseCase } from 'src/modules/auth/application/use-case/login.usecase';
 import { RegisterRequest } from '../requests/register.request';
-import { RegisterAction } from '../../../domain/actions/register.action';
+import { RegisterUseCase } from '../../../application/use-case/register.usecase';
 import { Responder } from '../../../../../shared/responder';
 import { RegisterResponse } from '../responses/register.response';
 import { LoginResponse } from '../responses/login.response';
 import { CurrentUser } from '../../../infrastructure/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../../infrastructure/guards/jwt.guard';
+import { RefreshTokenUseCase } from '../../../application/use-case/refresh-token.usecase';
+import { ApiPublic } from '../../../infrastructure/decorators/api-public.decorator';
+import { AuthUser } from '../../../domain/entities/auth-user';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly loginAction: LoginAction,
-    private readonly registerAction: RegisterAction,
+    private readonly loginUseCase: LoginUseCase,
+    private readonly registerUseCase: RegisterUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
   ) {}
 
   /**
@@ -23,10 +25,11 @@ export class AuthController {
    *
    * @param request
    */
+  @ApiPublic()
   @Post('register')
   async register(@Body() request: RegisterRequest): Promise<any> {
     const authUser = await request.toDto();
-    await this.registerAction.handle(authUser);
+    await this.registerUseCase.handle(authUser);
     return Responder.success(RegisterResponse.format(authUser));
   }
 
@@ -35,15 +38,23 @@ export class AuthController {
    *
    * @param request
    */
+  @ApiPublic()
   @Post('login')
   async login(@Body() request: LoginRequest): Promise<any> {
-    const token = await this.loginAction.handle(request.email, request.password);
-    return Responder.success(LoginResponse.format(token), 'Đăng nhập thành công.');
+    const [accessToken, refreshToken] = await this.loginUseCase.handle(request.email, request.password);
+    return Responder.success(LoginResponse.format(accessToken, refreshToken), 'Đăng nhập thành công.');
   }
 
+  /**
+   * Làm mới access token
+   *
+   * @param refreshTokenOld
+   */
+  @ApiPublic()
   @Post('refresh')
-  async refreshToken(@Body() request: LoginRequest): Promise<any> {
-    await this.loginAction.handle(request.email, request.password);
+  async refreshToken(@Body('refresh_token') refreshTokenOld: string): Promise<any> {
+    const [accessToken, refreshToken] = await this.refreshTokenUseCase.handle(refreshTokenOld);
+    return Responder.success(LoginResponse.format(accessToken, refreshToken), 'Lấy token mới thành công.');
   }
 
   /**
@@ -51,7 +62,7 @@ export class AuthController {
    */
   @Get('user')
   @UseGuards(JwtAuthGuard)
-  async detail(@CurrentUser() user: any): Promise<any> {
+  async detail(@CurrentUser() user: AuthUser): Promise<any> {
     return Responder.success(user);
   }
 }

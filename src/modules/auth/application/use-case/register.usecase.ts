@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthUser } from '../entities/auth-user';
-import { UserRepository } from '../contracts/user.repository.interface';
+import { AuthUser } from '../../domain/entities/auth-user';
+import { UserRepository } from '../../domain/contracts/user.repository.interface';
 import { AppException } from '../../../../shared/exceptions/app-exception';
 import { REPOSITORY } from '../../type';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
-export class RegisterAction {
+export class RegisterUseCase {
   constructor(
     @Inject(REPOSITORY.UserRepository)
     private readonly userRepository: UserRepository,
@@ -21,6 +22,7 @@ export class RegisterAction {
     if (userExist) {
       throw new AppException('Người dùng đã tồn tại.');
     }
+    authUser.password = await bcrypt.hash(authUser.passwordRaw, 10);
     authUser.userId = await this.userRepository.save(authUser);
     return authUser;
   }

@@ -13,20 +13,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     @Inject(REPOSITORY.UserRepository)
     private readonly userRepository: UserRepository,
   ) {
-    console.log({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: configService.get<string>('jwt.access.secret'),
-    });
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // lấy token từ header Authorization
-      ignoreExpiration: false,
       secretOrKey: configService.get<string>('jwt.access.secret'),
     });
   }
 
   async validate(payload: any) {
-    console.log(payload);
     const user = await this.userRepository.findById(payload.sub);
     if (!user) {
       return null;

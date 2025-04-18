@@ -1,12 +1,19 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AuthUser } from '../../domain/entities/auth-user';
 import { ConfigService } from '@nestjs/config';
 import { AppException } from '../../../../shared/exceptions/app-exception';
+import { REPOSITORY } from '../../type';
+import { TokenRepository } from '../../domain/contracts/token.repository.interface';
+import { AccessToken } from '../../domain/entities/access-token';
+import { RefreshToken } from '../../domain/entities/refresh-token';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class TokenService {
   constructor(
+    @Inject(REPOSITORY.TokenRepository)
+    private readonly tokenRepository: TokenRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -15,25 +22,49 @@ export class TokenService {
    * Tạo access token
    * @param user
    */
-  async createAccessToken(user: AuthUser): Promise<string> {
+  async createAccessToken(user: AuthUser): Promise<AccessToken> {
+    if (isEmpty(user)) {
+      throw new AppException('User không tồn tại');
+    }
     const payload = { sub: user.userId }; // Dữ liệu bạn muốn gắn vào token
-    return this.jwtService.sign(payload, {
+
+    const token = new AccessToken();
+    const expiry = Number(this.configService.get<string>('jwt.access.expiry'));
+
+    token.id = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('jwt.access.secret'),
-      expiresIn: Number(this.configService.get<string>('jwt.access.expiry')),
+      expiresIn: expiry,
     });
+    token.expiryDate = new Date(Date.now() + expiry * 1000);
+    token.expiryIn = expiry;
+
+    await this.tokenRepository.createAccessToken(token, user.userId);
+
+    return token;
   }
 
   /**
    * Tạo refresh token
    * @param user
+   * @param accessTokenId
    */
-  async createRefreshToken(user: AuthUser): Promise<string> {
-    const payload = { sub: user.userId }; // Dữ liệu bạn muốn gắn vào token
+  async createRefreshToken(user: AuthUser, accessTokenId: string): Promise<RefreshToken> {
+    const payload = { sub: user.userId };
 
-    return this.jwtService.sign(payload, {
+    const token = new RefreshToken();
+    const expiry = Number(this.configService.get<string>('jwt.refresh.expiry'));
+
+    token.id = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('jwt.refresh.secret'),
-      expiresIn: Number(this.configService.get<string>('jwt.refresh.expiry')),
+      expiresIn: expiry,
     });
+    token.accessTokenId = accessTokenId;
+    token.expiryDate = new Date(Date.now() + expiry * 1000);
+    token.expiryIn = expiry;
+
+    await this.tokenRepository.createRefreshToken(token, accessTokenId);
+
+    return token;
   }
 
   // Xác thực access token
