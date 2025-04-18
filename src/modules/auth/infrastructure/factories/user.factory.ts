@@ -15,6 +15,7 @@ export class UserFactory {
   static fromDto(dto: AuthUser): UserEntity {
     const entity = new UserEntity();
     entity.name = dto.name;
+    entity.username = dto.username;
     entity.email = dto.email;
     entity.password = dto.password;
     return entity;

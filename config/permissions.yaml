@@ -5,10 +5,10 @@ whitelist:
     - POST /auth/login
     - POST /auth/register
   usernames:
-    - huongud1
+    - admin
 
 routes:
-  "GET /users":
+  "GET /api/auth/me":
     roles: ['admin', 'manager']
     permissions: ['user.read']
     usernames: ['admin']

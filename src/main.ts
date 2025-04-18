@@ -6,6 +6,8 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './shared/interceptor/response.interceptor';
 import { JwtAuthGuard } from './modules/auth/infrastructure/guards/jwt.guard';
+import { PermissionGuard } from './modules/auth/infrastructure/guards/permission.guard';
+import { PermissionService } from './modules/auth/application/services/permission.service';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -21,7 +23,10 @@ async function bootstrap() {
     }),
   ); // bật cho toàn bộ app
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector)));
+  app.useGlobalGuards(
+    new JwtAuthGuard(app.get(Reflector)),
+    new PermissionGuard(app.get(Reflector), app.get(PermissionService)),
+  );
   app.enableCors();
   await app.listen(3000);
 }

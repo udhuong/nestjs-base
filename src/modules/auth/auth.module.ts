@@ -34,10 +34,10 @@ import { RefreshTokenUseCase } from './application/use-case/refresh-token.usecas
   providers: [
     JwtStrategy,
     TokenService,
+    PermissionService,
     LoginUseCase,
     RegisterUseCase,
     RefreshTokenUseCase,
-    PermissionService,
     {
       provide: REPOSITORY.UserRepository,
       useClass: UserRepositoryImpl,
