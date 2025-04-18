@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../../../infrastructure/guards/jwt.guard';
 import { RefreshTokenUseCase } from '../../../application/use-case/refresh-token.usecase';
 import { ApiPublic } from '../../../infrastructure/decorators/api-public.decorator';
 import { AuthUser } from '../../../domain/entities/auth-user';
+import { MeResponse } from '../responses/me.response';
 
 @Controller('api/auth')
 export class AuthController {
@@ -60,9 +61,9 @@ export class AuthController {
   /**
    * Lấy thông tin chi tiết user
    */
-  @Get('user')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
-  async detail(@CurrentUser() user: AuthUser): Promise<any> {
-    return Responder.success(user);
+  async getInfo(@CurrentUser() user: AuthUser): Promise<any> {
+    return Responder.success(MeResponse.format(user), 'Lấy thông tin thành công.');
   }
 }

@@ -1,4 +1,4 @@
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../database/entities/user.entity';
 import { AuthUser } from '../../domain/entities/auth-user';
 
 export class UserFactory {
@@ -6,6 +6,7 @@ export class UserFactory {
     const authUser = new AuthUser();
     authUser.userId = entity.id;
     authUser.name = entity.name;
+    authUser.username = entity.username;
     authUser.email = entity.email;
     authUser.password = entity.password;
     return authUser;

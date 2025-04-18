@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('access_tokens')
+@Entity('oauth_access_tokens')
 export class AccessTokenEntity {
   @PrimaryColumn()
   id: string;

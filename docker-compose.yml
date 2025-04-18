@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:8.4.4
-    container_name: tuvi_mysql
+    container_name: nestjs_base_mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -13,11 +13,11 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - tuvi_network
+      - nestjs_base_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
-    container_name: tuvi_phpmyadmin
+    container_name: nestjs_base_phpmyadmin
     restart: unless-stopped
     environment:
       PMA_HOST: db
@@ -28,12 +28,12 @@ services:
     depends_on:
       - db
     networks:
-      - tuvi_network
+      - nestjs_base_network
 
 
   redis:
     image: redis:7.2.4
-    container_name: tuvi_redis
+    container_name: nestjs_base_redis
     restart: unless-stopped
     environment:
       #- REDIS_USER=default mặc định nó là user default
@@ -44,11 +44,11 @@ services:
       - redis_data:/data
     command: [ "redis-server", "--requirepass", "admin", "--appendonly", "yes" ]
     networks:
-      - tuvi_network
+      - nestjs_base_network
 
 volumes:
   mysql_data:
   redis_data:
 networks:
-  tuvi_network:
+  nestjs_base_network:
     driver: bridge

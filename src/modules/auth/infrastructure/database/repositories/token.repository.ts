@@ -1,12 +1,12 @@
-import { TokenRepository } from '../../domain/contracts/token.repository.interface';
+import { TokenRepository } from '../../../domain/contracts/token.repository.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessTokenEntity } from '../entities/access-token.entity';
 import { Repository } from 'typeorm';
 import { RefreshTokenEntity } from '../entities/refresh-token.entity';
-import { AccessToken } from '../../domain/entities/access-token';
+import { AccessToken } from '../../../domain/entities/access-token';
 import { isEmpty } from 'lodash';
-import { RefreshToken } from '../../domain/entities/refresh-token';
+import { RefreshToken } from '../../../domain/entities/refresh-token';
 
 @Injectable()
 export class TokenRepositoryImpl implements TokenRepository {

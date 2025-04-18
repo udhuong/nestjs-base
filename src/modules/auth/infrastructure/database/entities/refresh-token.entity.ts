@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('refresh_tokens')
+@Entity('oauth_refresh_tokens')
 export class RefreshTokenEntity {
   @PrimaryColumn()
   id: string;
