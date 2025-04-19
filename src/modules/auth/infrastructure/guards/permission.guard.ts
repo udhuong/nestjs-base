@@ -19,9 +19,8 @@ export class PermissionGuard implements CanActivate {
       context.getClass(), // controller
     ]);
     if (isPublic) return true;
-    const roles = this.permissionRepository.getAllRoleByGuard('api');
-    console.log(roles);
-
+    const roles = this.permissionRepository.getAllRoleByGuardV3('api');
+    if (!roles) return false;
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const method = request.method;

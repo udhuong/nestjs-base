@@ -1,14 +1,20 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-
 export class Permission {
-  @PrimaryGeneratedColumn()
-  id: number;
+  private _id: number;
+  private _name: string;
 
-  name: string;
+  get id(): number {
+    return this._id;
+  }
 
-  @Column({ name: 'guard_name' })
-  guardName: string;
+  set id(value: number) {
+    this._id = value;
+  }
 
-  created: Date;
-  modified: Date;
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
 }
