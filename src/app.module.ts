@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { DatabaseConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommonModule } from './modules/common/common.module';
+import { UploadModule } from './modules/upload/upload.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -42,6 +43,7 @@ import { UserModule } from './modules/user/user.module';
     //   useClass: CacheConfigService,
     // }),
     ScheduleModule.forRoot(),
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,9 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { PermissionService } from '../../application/services/permission.service';
 import { Reflector } from '@nestjs/core';
+import { Observable } from 'rxjs';
+
+import { PermissionService } from '../../application/services/permission.service';
+import { PermissionRepository } from '../../domain/contracts/permission.interface';
 import { IS_PUBLIC_KEY } from '../decorators/api-public.decorator';
 
 @Injectable()
@@ -9,6 +11,7 @@ export class PermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly permissionService: PermissionService,
+    private readonly permissionRepository: PermissionRepository,
   ) {}
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -16,6 +19,8 @@ export class PermissionGuard implements CanActivate {
       context.getClass(), // controller
     ]);
     if (isPublic) return true;
+    const roles = this.permissionRepository.getAllRoleByGuard('api');
+    console.log(roles);
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;

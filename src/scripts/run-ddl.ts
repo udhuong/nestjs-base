@@ -1,19 +1,7 @@
-import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
-import { DataSource } from 'typeorm';
 
-// Load biến môi trường từ file .env
-dotenv.config();
-
-const AppDataSource = new DataSource({
-  type: 'mysql',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+import { AppDataSource } from '../config/data-source';
 
 async function run() {
   await AppDataSource.initialize();

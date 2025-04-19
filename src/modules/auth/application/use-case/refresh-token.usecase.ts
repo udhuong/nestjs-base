@@ -1,10 +1,11 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+
+import { TokenRepository } from '../../domain/contracts/token.interface';
+import { UserRepository } from '../../domain/contracts/user.interface';
 import { AccessToken } from '../../domain/entities/access-token';
-import { REPOSITORY } from '../../type';
-import { UserRepository } from '../../domain/contracts/user.repository.interface';
-import { TokenService } from '../services/token.service';
-import { TokenRepository } from '../../domain/contracts/token.repository.interface';
 import { RefreshToken } from '../../domain/entities/refresh-token';
+import { REPOSITORY } from '../../type';
+import { TokenService } from '../services/token.service';
 
 @Injectable()
 export class RefreshTokenUseCase {

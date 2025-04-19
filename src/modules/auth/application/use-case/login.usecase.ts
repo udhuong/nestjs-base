@@ -1,10 +1,11 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from '../../domain/contracts/user.repository.interface';
 import * as bcrypt from 'bcryptjs';
+
+import { UserRepository } from '../../domain/contracts/user.interface';
 import { AccessToken } from '../../domain/entities/access-token';
-import { TokenService } from '../services/token.service';
-import { REPOSITORY } from '../../type';
 import { RefreshToken } from '../../domain/entities/refresh-token';
+import { REPOSITORY } from '../../type';
+import { TokenService } from '../services/token.service';
 
 @Injectable()
 export class LoginUseCase {

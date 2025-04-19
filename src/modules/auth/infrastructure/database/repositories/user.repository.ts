@@ -1,10 +1,11 @@
-import { UserRepository } from '../../../domain/contracts/user.repository.interface';
 import { Injectable } from '@nestjs/common';
-import { AuthUser } from '../../../domain/entities/auth-user';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
+
+import { UserRepository } from '../../../domain/contracts/user.interface';
+import { AuthUser } from '../../../domain/entities/auth-user';
 import { UserFactory } from '../../factories/user.factory';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {

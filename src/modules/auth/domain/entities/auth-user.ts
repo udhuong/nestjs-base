@@ -1,5 +1,5 @@
-import { Role } from '../value-objects/role.enum';
-import { Permission } from '../value-objects/permission.enum';
+import { Permission } from './permission';
+import { Role } from './role';
 
 export class AuthUser {
   userId: number;

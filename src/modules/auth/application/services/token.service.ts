@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'lodash';
 
 import { AppException } from '../../../../shared/exceptions/app-exception';
-import { TokenRepository } from '../../domain/contracts/token.repository.interface';
+import { TokenRepository } from '../../domain/contracts/token.interface';
 import { AccessToken } from '../../domain/entities/access-token';
 import { AuthUser } from '../../domain/entities/auth-user';
 import { RefreshToken } from '../../domain/entities/refresh-token';

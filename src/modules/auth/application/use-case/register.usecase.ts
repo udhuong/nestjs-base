@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthUser } from '../../domain/entities/auth-user';
-import { UserRepository } from '../../domain/contracts/user.repository.interface';
-import { AppException } from '../../../../shared/exceptions/app-exception';
-import { REPOSITORY } from '../../type';
 import * as bcrypt from 'bcryptjs';
+
+import { AppException } from '../../../../shared/exceptions/app-exception';
+import { UserRepository } from '../../domain/contracts/user.interface';
+import { AuthUser } from '../../domain/entities/auth-user';
+import { REPOSITORY } from '../../type';
 
 @Injectable()
 export class RegisterUseCase {

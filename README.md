@@ -76,4 +76,9 @@ Nest is [MIT licensed](LICENSE).
 Chạy file tạo bảng:
 ```bash
 $ ts-node src/scripts/run-ddl.ts
+$ ts-node src/database/seeds/seeder.ts
+```
+
+```bash
+$ npx nest g module modules/upload
 ```

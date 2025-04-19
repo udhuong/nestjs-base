@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { isEmpty } from 'lodash';
 import { Repository } from 'typeorm';
 
-import { TokenRepository } from '../../../domain/contracts/token.repository.interface';
+import { TokenRepository } from '../../../domain/contracts/token.interface';
 import { AccessToken } from '../../../domain/entities/access-token';
 import { RefreshToken } from '../../../domain/entities/refresh-token';
 import { AccessTokenEntity } from '../entities/access-token.entity';
