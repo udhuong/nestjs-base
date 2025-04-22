@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { UserRepository } from '../../domain/contracts/user.interface';
-import { REPOSITORY } from '../../type';
+import { GetUserDetailByIdAction } from '../../domain/actions/get-user-detail-by-id.action';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
-    @Inject(REPOSITORY.UserRepository)
-    private readonly userRepository: UserRepository,
+    private readonly getUserDetailByIdAction: GetUserDetailByIdAction,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // lấy token từ header Authorization
@@ -21,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
-    const user = await this.userRepository.findById(payload.sub);
+    const user = await this.getUserDetailByIdAction.handle(payload.sub);
     if (!user) {
       return null;
     }

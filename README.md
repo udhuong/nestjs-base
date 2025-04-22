@@ -82,3 +82,6 @@ $ ts-node src/database/seeds/seeder.ts
 ```bash
 $ npx nest g module modules/upload
 ```
+
+
+docker exec -it nestjs_base_redis redis-cli -a admin

@@ -8,7 +8,6 @@ import { PermissionService } from './modules/auth/application/services/permissio
 import { TokenService } from './modules/auth/application/services/token.service';
 import { JwtAuthGuard } from './modules/auth/infrastructure/guards/jwt.guard';
 import { PermissionGuard } from './modules/auth/infrastructure/guards/permission.guard';
-import { REPOSITORY } from './modules/auth/type';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { ResponseInterceptor } from './shared/interceptor/response.interceptor';
 
@@ -28,7 +27,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalGuards(
     new JwtAuthGuard(app.get(Reflector), app.get(TokenService)),
-    new PermissionGuard(app.get(Reflector), app.get(PermissionService), app.get(REPOSITORY.PermissionRepository)),
+    new PermissionGuard(app.get(Reflector), app.get(PermissionService)),
   );
   app.enableCors();
   await app.listen(3000);

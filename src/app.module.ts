@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -7,6 +8,7 @@ import configuration from 'src/config/configuration';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CacheConfigService } from './config/cache.config';
 import { DatabaseConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommonModule } from './modules/common/common.module';
@@ -39,9 +41,9 @@ import { UserModule } from './modules/user/user.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,
     }),
-    // CacheModule.registerAsync({
-    //   useClass: CacheConfigService,
-    // }),
+    CacheModule.registerAsync({
+      useClass: CacheConfigService,
+    }),
     ScheduleModule.forRoot(),
     UploadModule,
   ],

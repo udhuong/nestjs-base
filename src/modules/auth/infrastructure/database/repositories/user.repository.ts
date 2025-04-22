@@ -45,6 +45,22 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   /**
+   * Tìm người dùng qua id cùng role và permission
+   * @param id
+   */
+  async findByIdWithRolePermission(id: number): Promise<AuthUser | null> {
+    const entity = await this.userEntity.findOne({
+      where: { id },
+      relations: ['roles.role.permissions', 'permissions.permission'],
+    });
+    if (!entity) {
+      return null;
+    }
+
+    return UserFactory.fromEntity(entity);
+  }
+
+  /**
    * Tạo mới người dùng
    * có hàm .create() - Chỉ tạo đối tượng trong bộ nhớ (chưa lưu vào DB)
    *

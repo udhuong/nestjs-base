@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { UserPermissionEntity } from './user-permission.entity';
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -28,4 +31,10 @@ export class UserEntity {
 
   @Column('datetime')
   modified: Date;
+
+  @OneToMany(() => UserRoleEntity, role => role.user)
+  roles: UserRoleEntity[];
+
+  @OneToMany(() => UserPermissionEntity, permission => permission.user)
+  permissions: UserPermissionEntity[];
 }
