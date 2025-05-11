@@ -26,9 +26,6 @@ export class GetUserDetailByIdAction {
   async handle(userId: number): Promise<AuthUser> {
     const key = 'GetUserDetailByIdAction:' + userId;
     const cached = await this.cacheManager.get(key);
-    console.log('>> Cache value:', cached);
-    console.log('Cache store:', this.cacheManager); // Log Redis hoặc memory
-
     if (cached != null) {
       return plainToClass(AuthUser, cached);
     }
@@ -37,7 +34,6 @@ export class GetUserDetailByIdAction {
       return null;
     }
     await this.cacheManager.set(key, user, 60 * 60 * 24);
-
     return user;
   }
 }

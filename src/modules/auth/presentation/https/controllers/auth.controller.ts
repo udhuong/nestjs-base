@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { LoginUseCase } from 'src/modules/auth/application/use-case/login.usecase';
 import { LogoutUseCase } from 'src/modules/auth/application/use-case/logout.usecase';
 import { RefreshTokenUseCase } from 'src/modules/auth/application/use-case/refresh-token.usecase';
 import { RegisterUseCase } from 'src/modules/auth/application/use-case/register.usecase';
+import { GetUserDetailByIdAction } from 'src/modules/auth/domain/actions/get-user-detail-by-id.action';
 import { AuthUser } from 'src/modules/auth/domain/entities/auth-user';
 import { ApiPublic } from 'src/modules/auth/infrastructure/decorators/api-public.decorator';
 import { CurrentUser } from 'src/modules/auth/infrastructure/decorators/current-user.decorator';
@@ -21,6 +22,7 @@ export class AuthController {
     private readonly registerUseCase: RegisterUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private readonly logoutUseCase: LogoutUseCase,
+    private readonly getUserDetailByIdAction: GetUserDetailByIdAction,
   ) {}
 
   /**
@@ -79,5 +81,12 @@ export class AuthController {
     const token = authHeader?.split(' ')[1];
     await this.logoutUseCase.handle(token);
     return Responder.ok('Đăng xuất thành công');
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getByUserId(@Param('id') id: string): Promise<any> {
+    const user = await this.getUserDetailByIdAction.handle(Number(id));
+    return Responder.success(MeResponse.format(user), 'Lấy thông tin thành công.');
   }
 }
