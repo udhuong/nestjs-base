@@ -2,13 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'lodash';
-
-import { AppException } from '../../../../shared/exceptions/app-exception';
-import { TokenRepository } from '../../domain/contracts/token.interface';
-import { AccessToken } from '../../domain/entities/access-token';
-import { AuthUser } from '../../domain/entities/auth-user';
-import { RefreshToken } from '../../domain/entities/refresh-token';
-import { REPOSITORY } from '../../type';
+import { TokenRepository } from 'src/modules/auth/domain/contracts/token.interface';
+import { AccessToken } from 'src/modules/auth/domain/entities/access-token';
+import { AuthUser } from 'src/modules/auth/domain/entities/auth-user';
+import { RefreshToken } from 'src/modules/auth/domain/entities/refresh-token';
+import { REPOSITORY } from 'src/modules/auth/type';
+import { AppException } from 'src/shared/exceptions/app-exception';
 
 @Injectable()
 export class TokenService {
@@ -101,5 +100,24 @@ export class TokenService {
       throw new AppException('Token không tồn tại');
     }
     return accessToken.revoked == true;
+  }
+
+  /**
+   * Xóa access token
+   *
+   * @param token
+   */
+  async revokeAccessToken(token: string): Promise<any> {
+    const accessToken = await this.tokenRepository.findAccessToken(token);
+    if (!accessToken) {
+      throw new AppException('Token không tồn tại');
+    }
+
+    if (accessToken.revoked) {
+      throw new AppException('Token đã bị thu hồi');
+    }
+
+    this.tokenRepository.revokeAccessToken(accessToken.id).catch(() => console.error);
+    this.tokenRepository.revokeRefreshTokenFromAccessToken(accessToken.id).catch(() => console.error);
   }
 }

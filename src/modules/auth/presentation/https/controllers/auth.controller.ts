@@ -1,17 +1,18 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { LoginRequest } from 'src/modules/auth/presentation/https/requests/login.request';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { LoginUseCase } from 'src/modules/auth/application/use-case/login.usecase';
-import { RegisterRequest } from '../requests/register.request';
-import { RegisterUseCase } from '../../../application/use-case/register.usecase';
-import { Responder } from '../../../../../shared/responder';
-import { RegisterResponse } from '../responses/register.response';
-import { LoginResponse } from '../responses/login.response';
-import { CurrentUser } from '../../../infrastructure/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../infrastructure/guards/jwt.guard';
-import { RefreshTokenUseCase } from '../../../application/use-case/refresh-token.usecase';
-import { ApiPublic } from '../../../infrastructure/decorators/api-public.decorator';
-import { AuthUser } from '../../../domain/entities/auth-user';
-import { MeResponse } from '../responses/me.response';
+import { LogoutUseCase } from 'src/modules/auth/application/use-case/logout.usecase';
+import { RefreshTokenUseCase } from 'src/modules/auth/application/use-case/refresh-token.usecase';
+import { RegisterUseCase } from 'src/modules/auth/application/use-case/register.usecase';
+import { AuthUser } from 'src/modules/auth/domain/entities/auth-user';
+import { ApiPublic } from 'src/modules/auth/infrastructure/decorators/api-public.decorator';
+import { CurrentUser } from 'src/modules/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/modules/auth/infrastructure/guards/jwt.guard';
+import { LoginRequest } from 'src/modules/auth/presentation/https/requests/login.request';
+import { RegisterRequest } from 'src/modules/auth/presentation/https/requests/register.request';
+import { LoginResponse } from 'src/modules/auth/presentation/https/responses/login.response';
+import { MeResponse } from 'src/modules/auth/presentation/https/responses/me.response';
+import { RegisterResponse } from 'src/modules/auth/presentation/https/responses/register.response';
+import { Responder } from 'src/shared/responder';
 
 @Controller('api/auth')
 export class AuthController {
@@ -19,6 +20,7 @@ export class AuthController {
     private readonly loginUseCase: LoginUseCase,
     private readonly registerUseCase: RegisterUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
+    private readonly logoutUseCase: LogoutUseCase,
   ) {}
 
   /**
@@ -65,5 +67,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async getInfo(@CurrentUser() user: AuthUser): Promise<any> {
     return Responder.success(MeResponse.format(user), 'Lấy thông tin thành công.');
+  }
+
+  /**
+   * Lấy thông tin chi tiết user
+   */
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: Request): Promise<any> {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader?.split(' ')[1];
+    await this.logoutUseCase.handle(token);
+    return Responder.ok('Đăng xuất thành công');
   }
 }

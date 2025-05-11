@@ -4,8 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CacheConfigService } from 'src/config/cache.config';
+import { LogoutUseCase } from 'src/modules/auth/application/use-case/logout.usecase';
 
-import { CacheConfigService } from '../../config/cache.config';
 import { PermissionService } from './application/services/permission.service';
 import { TokenService } from './application/services/token.service';
 import { LoginUseCase } from './application/use-case/login.usecase';
@@ -48,6 +49,7 @@ import { REPOSITORY } from './type';
     LoginUseCase,
     RegisterUseCase,
     RefreshTokenUseCase,
+    LogoutUseCase,
     {
       provide: REPOSITORY.UserRepository,
       useClass: UserRepositoryImpl,

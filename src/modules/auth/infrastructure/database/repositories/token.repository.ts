@@ -50,12 +50,12 @@ export class TokenRepositoryImpl implements TokenRepository {
   /**
    * Tìm access token
    *
-   * @param refreshToken
+   * @param tokenId
    */
-  async findAccessToken(refreshToken: string): Promise<AccessToken> {
+  async findAccessToken(tokenId: string): Promise<AccessToken> {
     const entity = await this.accessTokenRepository.findOne({
       where: {
-        id: refreshToken,
+        id: tokenId,
       },
     });
     if (isEmpty(entity)) {
@@ -72,12 +72,12 @@ export class TokenRepositoryImpl implements TokenRepository {
   /**
    * Tìm refresh token
    *
-   * @param refreshToken
+   * @param tokenId
    */
-  async findRefreshToken(refreshToken: string): Promise<RefreshToken> {
+  async findRefreshToken(tokenId: string): Promise<RefreshToken> {
     const entity = await this.refreshTokenRepository.findOne({
       where: {
-        id: refreshToken,
+        id: tokenId,
       },
     });
     if (isEmpty(entity)) {
@@ -137,6 +137,32 @@ export class TokenRepositoryImpl implements TokenRepository {
     await this.refreshTokenRepository.update(
       {
         id: token,
+      },
+      {
+        revoked: true,
+      },
+    );
+  }
+
+  /**
+   * Vô hiệu hóa refresh token từ access token
+   *
+   * @param accessToken
+   */
+  async revokeRefreshTokenFromAccessToken(accessToken: string): Promise<void> {
+    const entity = await this.refreshTokenRepository.findOne({
+      where: {
+        accessTokenId: accessToken,
+        revoked: false,
+      },
+    });
+    if (isEmpty(entity)) {
+      return null;
+    }
+
+    await this.refreshTokenRepository.update(
+      {
+        id: entity.id,
       },
       {
         revoked: true,
