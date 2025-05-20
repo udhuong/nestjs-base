@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import configuration from 'src/config/configuration';
+import { HttpModule } from 'src/shared/http.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -40,6 +41,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     UserModule,
     CommonModule,
+    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
