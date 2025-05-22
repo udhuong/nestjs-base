@@ -48,7 +48,6 @@ import { UserModule } from './modules/user/user.module';
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
-      // name: 'masterConnection',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,

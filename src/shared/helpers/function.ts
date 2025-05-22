@@ -9,8 +9,8 @@ export function mapToObject(map: Map<any, any>): Record<string, any> {
 
 // let delay = 5000;
 //
-// let timerId = setTimeout(function request() {
-//   /*... gửi request lên server...*/
+// let timerId = setTimeout(function requests() {
+//   /*... gửi requests lên server...*/
 //
 //   if (/* mã lỗi trả về liên quan đến server quá tải */) {
 //     // tăng delay lên hai lần
@@ -18,6 +18,6 @@ export function mapToObject(map: Map<any, any>): Record<string, any> {
 //   }
 //
 //   // chạy lại setTimeout với giá trị delay mới
-//   timerId = setTimeout(request, delay);
+//   timerId = setTimeout(requests, delay);
 //
 // }, delay);

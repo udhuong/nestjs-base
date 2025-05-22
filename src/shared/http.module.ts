@@ -8,7 +8,7 @@ import { HttpService } from 'src/shared/services/http.service';
     {
       provide: 'USER_HTTP_SERVICE',
       useFactory: (configService: ConfigService) => {
-        const service = new HttpService(configService);
+        const service = new HttpService();
         service.init({
           baseURL: configService.get<string>('USER_SERVICE_BASE_URL'),
         });

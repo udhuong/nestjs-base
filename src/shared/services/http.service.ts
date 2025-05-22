@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AppException } from 'src/shared/exceptions/app-exception';
 
@@ -12,10 +11,6 @@ export class HttpService {
   private refreshToken = '';
   private refreshTokenUri = '';
   private readonly logger = new Logger(HttpService.name);
-
-  constructor(private configService: ConfigService) {
-    this.setupInterceptors();
-  }
 
   /**
    * Khởi tạo client
@@ -33,6 +28,7 @@ export class HttpService {
     }
 
     this.client = axios.create(config);
+    this.setupInterceptors();
   }
 
   setTokens(tokens: { accessToken: string; refreshToken: string }) {
@@ -75,7 +71,7 @@ export class HttpService {
             this.accessToken = res.data.accessToken;
             this.refreshToken = res.data.refreshToken;
 
-            // Gắn token mới cho các request sau
+            // Gắn token mới cho các requests sau
             this.client.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
 
             this.refreshQueue.forEach(cb => cb());

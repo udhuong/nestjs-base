@@ -1,7 +1,6 @@
+import { AppDataSource } from 'src/config/data-source';
+import CreateRolesSeed from 'src/modules/auth/infrastructure/database/seeds/create-roles.seed';
 import { DataSource } from 'typeorm';
-
-import { AppDataSource } from '../../config/data-source';
-import CreateRolesSeed from '../../modules/auth/infrastructure/database/seeds/create-roles.seed';
 
 AppDataSource.initialize()
   .then(async (dataSource: DataSource) => {
