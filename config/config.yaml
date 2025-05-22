@@ -13,7 +13,7 @@ database:
     entities:
       - 'dist/**/*.entity{.ts,.js}'
     synchronize: false
-    logging: ${TYPEORM_LOG}
+    logging: true
 
 jwt:
   access:

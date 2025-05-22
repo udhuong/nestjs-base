@@ -9,13 +9,5 @@
     "prettier-plugin-import-sort",
     "prettier-plugin-organize-imports",
     "prettier-plugin-align"
-  ],
-  "importOrder": [
-    "^@nestjs/(.*)$",
-    "^@/(.*)$",
-    "^[./]"
-  ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "endOfLine": "crlf"
+  ]
 }

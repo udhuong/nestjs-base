@@ -71,3 +71,17 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+Chạy file tạo bảng:
+```bash
+$ ts-node src/scripts/run-ddl.ts
+$ ts-node src/database/seeds/seeder.ts
+```
+
+```bash
+$ npx nest g module modules/upload
+```
+
+
+docker exec -it nestjs_base_redis redis-cli -a admin

@@ -1,9 +1,13 @@
+import { Permission } from './permission';
+import { Role } from './role';
+
 export class AuthUser {
   userId: number;
   name: string;
+  username: string;
   email: string;
   password: string;
   passwordRaw: string;
-  roles: string[];
-  permissions: string[];
+  roles: Role[] = [];
+  permissions: Permission[] = [];
 }

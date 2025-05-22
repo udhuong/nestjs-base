@@ -1,18 +1,20 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-redis-store';
+import configuration from 'src/config/configuration';
+import { HttpModule } from 'src/shared/http.module';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
-import { CommonModule } from './modules/common/common.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from 'src/config/configuration';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfig } from './config/database.config';
-import { CacheModule } from '@nestjs/cache-manager';
-import { CacheConfigService } from './config/cache.config';
-import { ScheduleModule } from '@nestjs/schedule';
-import { JwtModule } from '@nestjs/jwt';
-
+import { AuthModule } from './modules/auth/auth.module';
+import { CommonModule } from './modules/common/common.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -25,24 +27,33 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
+    CacheModule.register({
+      // Cache RAM
+      // ttl: 10, // thời gian sống mặc định (10 giây)
+      // max: 100, // số lượng key tối đa
+      // isGlobal: true, // dùng toàn cục
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+      password: 'admin',
+      ttl: 300,
+    }),
     AuthModule,
     UserModule,
     CommonModule,
+    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
-      // name: 'masterConnection',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,
     }),
-    CacheModule.registerAsync({
-      useClass: CacheConfigService,
-    }),
     ScheduleModule.forRoot(),
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

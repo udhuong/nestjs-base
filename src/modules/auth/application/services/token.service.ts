@@ -1,13 +1,13 @@
-import { JwtService } from '@nestjs/jwt';
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthUser } from '../../domain/entities/auth-user';
 import { ConfigService } from '@nestjs/config';
-import { AppException } from '../../../../shared/exceptions/app-exception';
-import { REPOSITORY } from '../../type';
-import { TokenRepository } from '../../domain/contracts/token.repository.interface';
-import { AccessToken } from '../../domain/entities/access-token';
-import { RefreshToken } from '../../domain/entities/refresh-token';
+import { JwtService } from '@nestjs/jwt';
 import { isEmpty } from 'lodash';
+import { TokenRepository } from 'src/modules/auth/domain/contracts/token.interface';
+import { AccessToken } from 'src/modules/auth/domain/entities/access-token';
+import { AuthUser } from 'src/modules/auth/domain/entities/auth-user';
+import { RefreshToken } from 'src/modules/auth/domain/entities/refresh-token';
+import { REPOSITORY } from 'src/modules/auth/type';
+import { AppException } from 'src/shared/exceptions/app-exception';
 
 @Injectable()
 export class TokenService {
@@ -87,5 +87,37 @@ export class TokenService {
     } catch (e) {
       throw new AppException('Token is invalid or expired');
     }
+  }
+
+  /**
+   * Kiểm tra xem access token có bị thu hồi hay không
+   *
+   * @param token
+   */
+  async isRevokedAccessToken(token: string): Promise<boolean> {
+    const accessToken = await this.tokenRepository.findAccessToken(token);
+    if (!accessToken) {
+      throw new AppException('Token không tồn tại');
+    }
+    return accessToken.revoked == true;
+  }
+
+  /**
+   * Xóa access token
+   *
+   * @param token
+   */
+  async revokeAccessToken(token: string): Promise<any> {
+    const accessToken = await this.tokenRepository.findAccessToken(token);
+    if (!accessToken) {
+      throw new AppException('Token không tồn tại');
+    }
+
+    if (accessToken.revoked) {
+      throw new AppException('Token đã bị thu hồi');
+    }
+
+    this.tokenRepository.revokeAccessToken(accessToken.id).catch(() => console.error);
+    this.tokenRepository.revokeRefreshTokenFromAccessToken(accessToken.id).catch(() => console.error);
   }
 }
