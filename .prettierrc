@@ -9,5 +9,6 @@
     "prettier-plugin-import-sort",
     "prettier-plugin-organize-imports",
     "prettier-plugin-align"
-  ]
+  ],
+  "endOfLine": "lf"
 }

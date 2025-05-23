@@ -3,7 +3,7 @@ app:
   port: ${PORT}
 
 database:
-  default:
+  mysql:
     type: 'mysql'
     host: ${DB_HOST}
     port: ${DB_PORT}
@@ -11,10 +11,20 @@ database:
     password: ${DB_PASSWORD}
     database: ${DB_NAME}
     entities:
-      - 'dist/**/*.entity{.ts,.js}'
+      - 'dist/**/mysql/**/*.entity{.ts,.js}'
     synchronize: false
     logging: true
-
+  postgresql:
+    type: 'postgres'
+    host: ${DB_POSTGRESQL_HOST}
+    port: ${DB_POSTGRESQL_PORT}
+    username: ${DB_POSTGRESQL_USER}
+    password: ${DB_POSTGRESQL_PASSWORD}
+    database: ${DB_POSTGRESQL_NAME}
+    entities:
+      - 'dist/**/postgresql/**/*.entity{.ts,.js}'
+    synchronize: false
+    logging: true
 jwt:
   access:
     secret: ${ACCESS_TOKEN_SECRET}

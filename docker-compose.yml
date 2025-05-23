@@ -31,7 +31,10 @@ services:
       - nestjs_base_network
 
   postgres:
-    image: postgres:13.20
+    build:
+      context: .
+      dockerfile: docker/postgresql.Dockerfile
+    image: postgres-vi:13.20
     container_name: nestjs_base_postgres
     restart: unless-stopped
     environment:

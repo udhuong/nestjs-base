@@ -4,17 +4,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as redisStore from 'cache-manager-redis-store';
+import { CacheConfigService } from 'src/config/cache.config';
 import configuration from 'src/config/configuration';
+import { MysqlConfig } from 'src/config/mysql.config';
+import { PostgresqlConfig } from 'src/config/postgresql.config';
+import { CONNECTION } from 'src/modules/user/user-type';
 import { HttpModule } from 'src/shared/http.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommonModule } from './modules/common/common.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UserModule } from './modules/user/user.module';
+
+const MODULES = [AuthModule, UserModule, CommonModule, HttpModule, UploadModule];
+
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -27,21 +32,9 @@ import { UserModule } from './modules/user/user.module';
       }),
       inject: [ConfigService],
     }),
-    CacheModule.register({
-      // Cache RAM
-      // ttl: 10, // thời gian sống mặc định (10 giây)
-      // max: 100, // số lượng key tối đa
-      // isGlobal: true, // dùng toàn cục
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      password: 'admin',
-      ttl: 300,
+    CacheModule.registerAsync({
+      useClass: CacheConfigService,
     }),
-    AuthModule,
-    UserModule,
-    CommonModule,
-    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
@@ -50,10 +43,23 @@ import { UserModule } from './modules/user/user.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => new DatabaseConfig(configService).dbDefault,
+      useFactory: (configService: ConfigService) => {
+        console.log('MYSQL CONFIG', new MysqlConfig(configService).dbDefault);
+        return new MysqlConfig(configService).dbDefault;
+      },
+      // name: CONNECTION.MYSQL, để mặc định sẽ có name là 'default'
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule], // Phải import ConfigModule ở đây
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        console.log('POSTGRESQL CONFIG', new PostgresqlConfig(configService).dbDefault);
+        return new PostgresqlConfig(configService).dbDefault;
+      },
+      name: CONNECTION.POSTGRESQL,
+    }),
+    ...MODULES,
     ScheduleModule.forRoot(),
-    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
