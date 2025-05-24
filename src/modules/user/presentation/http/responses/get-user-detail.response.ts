@@ -1,4 +1,5 @@
 import { User } from 'src/modules/user/domain/entities/user';
+import { UserStatus } from 'src/modules/user/domain/value-objects/user-status';
 
 export class GetUserDetailResponse {
   static format(user: User): any {
@@ -8,7 +9,7 @@ export class GetUserDetailResponse {
       username: user.username,
       email: user.email,
       phone: user.phone,
-      status: user.status.getLabel(),
+      status: user.status?.getLabel() ?? UserStatus.DEFAULT.getLabel(),
     };
   }
 }

@@ -8,7 +8,7 @@ whitelist:
     - admin
 
 routes:
-  "GET /api/auth/me":
+  'GET /api/auth/me':
     roles: ['admin', 'manager']
     permissions: ['user.read']
     usernames: ['admin']

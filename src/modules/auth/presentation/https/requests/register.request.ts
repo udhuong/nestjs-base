@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+
 import { AuthUser } from '../../../domain/entities/auth-user';
 
 export class RegisterRequest {

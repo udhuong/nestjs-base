@@ -3,14 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/modules/user/domain/contracts/user.repository';
 import { User } from 'src/modules/user/domain/entities/user';
 import { UserStatus } from 'src/modules/user/domain/value-objects/user-status';
-import { UserEntity } from 'src/modules/user/infrastructure/database/mysql/entities/user.entity';
+import { UserEntity } from 'src/modules/user/infrastructure/database/postgresql/entities/user.entity';
 import { UserFactory } from 'src/modules/user/infrastructure/factories/user.factory';
+import { CONNECTION } from 'src/modules/user/user-type';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectRepository(UserEntity, CONNECTION.POSTGRESQL)
     private readonly userRepo: Repository<UserEntity>,
   ) {}
 
