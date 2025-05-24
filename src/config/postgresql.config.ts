@@ -7,7 +7,6 @@ export class PostgresqlConfig {
 
   get dbDefault(): TypeOrmModuleOptions {
     const config = this.configService.get('database.postgresql');
-    console.log('POSTGRESQL CONFIG', config);
     return {
       ...config,
       logger: new CustomTypeORMLogger(),

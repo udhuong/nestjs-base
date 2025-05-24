@@ -3,6 +3,7 @@ export const REPOSITORY = {
 };
 
 export const CONNECTION = {
-  MYSQL: 'mysqlDataSource',
+  MYSQL: 'mysqlConnection',
   POSTGRESQL: 'postgresConnection',
+  MONGODB: 'mongodbConnection',
 };

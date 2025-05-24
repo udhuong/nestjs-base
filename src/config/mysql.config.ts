@@ -8,7 +8,6 @@ export class MysqlConfig {
 
   get dbDefault(): TypeOrmModuleOptions {
     const config = this.configService.get('database.mysql');
-    console.log('MYSQL CONFIG', config);
     return {
       ...config,
       logger: new CustomTypeORMLogger(),
