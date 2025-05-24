@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SentryModule } from '@sentry/nestjs/setup';
 import { CacheConfigService } from 'src/config/cache.config';
 import configuration from 'src/config/configuration';
 import { MongodbConfig } from 'src/config/mongodb.config';
@@ -25,6 +26,7 @@ const MODULES = [AuthModule, UserModule, CommonModule, HttpModule, UploadModule]
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

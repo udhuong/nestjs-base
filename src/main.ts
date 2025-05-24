@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as Sentry from '@sentry/nestjs';
 import * as bodyParser from 'body-parser';
 
 import { AppModule } from './app.module';
@@ -12,6 +13,15 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { ResponseInterceptor } from './shared/interceptor/response.interceptor';
 
 async function bootstrap() {
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      tracesSampleRate: 1.0,
+      environment: process.env.NODE_ENV || 'development',
+      sendDefaultPii: true,
+    });
+  }
+
   // const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: false, //Muốn tuỳ chỉnh body-parser, để có thể dùng form-data upload file
