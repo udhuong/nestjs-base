@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserSchema, UserSchemaName } from 'src/modules/user/infrastructure/database/mongodb/schema/user.schema';
+import { UserRepositoryImpl } from 'src/modules/user/infrastructure/database/mongodb/repositories/user.repository.impl';
+import { UserModel, UserSchema } from 'src/modules/user/infrastructure/database/mongodb/schema/user.model';
 import { UserEntity as UserEntityMysql } from 'src/modules/user/infrastructure/database/mysql/entities/user.entity';
 import { UserEntity as UserEntityPg } from 'src/modules/user/infrastructure/database/postgresql/entities/user.entity';
-import { UserRepositoryImpl } from 'src/modules/user/infrastructure/database/postgresql/repositories/user.repository.impl';
 import { UserController } from 'src/modules/user/presentation/http/controllers/user.controller';
 import { CONNECTION, REPOSITORY } from 'src/modules/user/user-type';
 
@@ -17,7 +17,7 @@ const PROVIDER_REPOSITORIES = [
 ];
 const MONGO_SCHEMA = [
   {
-    name: UserSchemaName,
+    name: UserModel.name,
     schema: UserSchema,
   },
 ];

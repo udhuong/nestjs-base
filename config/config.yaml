@@ -11,6 +11,7 @@ database:
     password: ${DB_PASSWORD}
     database: ${DB_NAME}
     entities:
+      - 'dist/**/*/*.entity{.ts,.js}'
       - 'dist/**/mysql/**/*.entity{.ts,.js}'
     synchronize: false
     logging: true
