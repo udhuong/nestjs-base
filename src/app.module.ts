@@ -19,10 +19,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommonModule } from './modules/common/common.module';
+import { MailModule } from './modules/mail/mail.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UserModule } from './modules/user/user.module';
-
-const MODULES = [AuthModule, UserModule, CommonModule, HttpModule, UploadModule];
 
 @Module({
   imports: [
@@ -64,11 +63,14 @@ const MODULES = [AuthModule, UserModule, CommonModule, HttpModule, UploadModule]
       useFactory: (configService: ConfigService) => new MongodbConfig(configService).dbDefault,
       connectionName: CONNECTION.MONGODB,
     }),
-    ...MODULES,
+    AuthModule,
+    UserModule,
+    CommonModule,
+    HttpModule,
+    UploadModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService, MongoLoggerService],
 })
-export class AppModule {
-  constructor(private readonly loggerService: MongoLoggerService) {} // <- buộc Nest khởi tạo
-}
+export class AppModule {}

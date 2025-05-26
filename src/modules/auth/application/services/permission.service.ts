@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { loadPermissions } from 'src/shared/helpers/yaml-loader';
 
-import { loadPermissions } from '../../../../shared/yaml-loader';
 import { AuthUser } from '../../domain/entities/auth-user';
 
 @Injectable()
