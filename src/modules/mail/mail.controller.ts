@@ -5,6 +5,10 @@ import { MailService } from 'src/modules/mail/mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
+  /**
+   * Gửi không quá 500 email/ngày
+   * @param request
+   */
   @Post('send-welcome')
   async sendWelcome(@Body() request: { to: string; name: string }) {
     await this.mailService.sendWelcomeEmail(request.to, request.name);

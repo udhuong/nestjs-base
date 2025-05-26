@@ -10,8 +10,10 @@ export class MailService {
       await this.mailerService.sendMail({
         to,
         subject: 'Welcome to Our App!',
-        text: `Hello ${name}, welcome to our application!`,
-        html: `<p>Hello <b>${name}</b>,</p><p>Welcome to our application!</p>`,
+        template: './welcome', // Tên template trong thư mục templates, phải copy templaste thủ công "npm run copy:templates"
+        context: { name, action_url: 'https://your-app.com/dashboard', year: new Date().getFullYear() },
+        // text: `Hello ${name}, welcome to our application!`,
+        // html: `<p>Hello <b>${name}</b>,</p><p>Welcome to our application!</p>`,
       });
       console.log(`Email sent to ${to}`);
     } catch (error) {
