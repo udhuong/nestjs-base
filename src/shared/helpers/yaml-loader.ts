@@ -1,5 +1,5 @@
-import * as yaml from 'yaml';
 import * as fs from 'fs';
+import * as yaml from 'yaml';
 
 export const loadPermissions = () => {
   const file = fs.readFileSync('config/permissions.yaml', 'utf8');
